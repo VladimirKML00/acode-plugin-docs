@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AfriSanté Beauty Hub - Boutique en ligne</title>
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-green-600 text-white shadow-lg">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-2">
+                    <i data-feather="shopping-bag" class="w-8 h-8"></i>
+                    <span class="text-xl font-bold">AfriSanté Beauty Hub</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button id="cartBtn" class="relative p-2 hover:bg-green-700 rounded-full">
+                        <i data-feather="shopping-cart"></i>
+                        <span id="cartCount" class="absolute -top-1 -right-1 bg-red-500 text-white rounded-full text-xs w-5 h-5 flex items-center justify-center">0</span>
+                    </button>
+                    <button id="adminBtn" class="p-2 hover:bg-green-700 rounded-full">
+                        <i data-feather="settings"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-r from-green-500 to-green-700 text-white py-20">
+        <div class="container mx-auto px-4 text-center">
+            <h1 class="text-5xl font-bold mb-4">Bienvenue chez AfriSanté Beauty Hub</h1>
+            <p class="text-xl mb-8">Découvrez nos produits naturels pour votre santé et beauté</p>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mt-12">
+                <div class="bg-white/20 backdrop-blur-sm rounded-lg p-4">
+                    <i data-feather="heart" class="w-12 h-12 mx-auto mb-4"></i>
+                    <h3 class="font-semibold">Compléments Alimentaires</h3>
+                </div>
+                <div class="bg-white/20 backdrop-blur-sm rounded-lg p-4">
+                    <i data-feather="star" class="w-12 h-12 mx-auto mb-4"></i>
+                    <h3 class="font-semibold">Cosmétiques</h3>
+                </div>
+                <div class="bg-white/20 backdrop-blur-sm rounded-lg p-4">
+                    <i data-feather="eye" class="w-12 h-12 mx-auto mb-4"></i>
+                    <h3 class="font-semibold">Produits Beauté</h3>
+                </div>
+                <div class="bg-white/20 backdrop-blur-sm rounded-lg p-4">
+                    <i data-feather="gem" class="w-12 h-12 mx-auto mb-4"></i>
+                    <h3 class="font-semibold">Bijoux</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section class="py-16">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">Nos Produits</h2>
+            <div id="productsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Products will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Cart Modal -->
+    <div id="cartModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+        <div class="fixed right-0 top-0 h-full w-full md:w-96 bg-white shadow-lg transform transition-transform">
+            <div class="p-4 border-b">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-lg font-semibold">Panier</h3>
+                    <button id="closeCart" class="text-gray-500 hover:text-gray-700">
+                        <i data-feather="x"></i>
+                    </button>
+                </div>
+            </div>
+            <div id="cartItems" class="p-4 overflow-y-auto h-3/4">
+                <!-- Cart items will be loaded here -->
+            </div>
+            <div class="absolute bottom-0 w-full p-4 border-t bg-white">
+                <div class="flex justify-between mb-4">
+                    <span class="font-semibold">Total:</span>
+                    <span id="cartTotal">0 FCFA</span>
+                </div>
+                <button id="validateOrder" class="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition duration-200">
+                    Valider la commande via WhatsApp
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Modal -->
+    <div id="adminModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+        <div class="fixed inset-0 flex items-center justify-center">
+            <div class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4">
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold">Accès Administrateur</h3>
+                        <button id="closeAdmin" class="text-gray-500 hover:text-gray-700">
+                            <i data-feather="x"></i>
+                        </button>
+                    </div>
+                    <input type="password" id="adminCode" placeholder="Code d'accès" class="w-full p-3 border rounded-lg mb-4">
+                    <button id="loginAdmin" class="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition duration-200">
+                        Se connecter
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div id="adminPanel" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+        <div class="fixed inset-0 flex items-center justify-center">
+            <div class="bg-white rounded-lg shadow-xl w-full max-w-4xl mx-4 max-h-90vh overflow-hidden">
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-xl font-semibold">Panel Administrateur</h3>
+                        <button id="closeAdminPanel" class="text-gray-500 hover:text-gray-700">
+                            <i data-feather="x"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- WhatsApp Number Section -->
+                    <div class="mb-6">
+                        <h4 class="font-semibold mb-3">Numéro WhatsApp</h4>
+                        <div class="flex space-x-2">
+                            <input type="text" id="whatsappNumber" value="+237652741659" class="flex-1 p-3 border rounded-lg">
+                            <button id="saveWhatsApp" class="bg-green-600 text-white px-4 rounded-lg hover:bg-green-700">
+                                Sauvegarder
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Add Product Section -->
+                    <div class="mb-6">
+                        <h4 class="font-semibold mb-3">Ajouter un produit</h4>
+                        <div class="space-y-3">
+                            <input type="text" id="productName" placeholder="Nom du produit" class="w-full p-3 border rounded-lg">
+                            <input type="number" id="productPrice" placeholder="Prix en FCFA" class="w-full p-3 border rounded-lg">
+                            <textarea id="productDescription" placeholder="Description" class="w-full p-3 border rounded-lg"></textarea>
+                            <div class="flex items-center space-x-3">
+                                <input type="file" id="productImage" accept="image/*" class="hidden">
+                                <button id="uploadImage" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                                    Importer l'image
+                                </button>
+                                <span id="fileName" class="text-sm text-gray-600">Aucun fichier sélectionné</span>
+                            </div>
+                            <button id="addProduct" class="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700">
+                                Ajouter le produit
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Products Management -->
+                    <div>
+                        <h4 class="font-semibold mb-3">Gestion des produits</h4>
+                        <div id="adminProducts" class="space-y-3 max-h-60 overflow-y-auto">
+                            <!-- Admin products list -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Feather Icons
+        feather.replace();
+
+        // Vanta.js Background
+        VANTA.NET({
+            el: "body",
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            scale: 1.00,
+            scaleMobile: 1.00,
+            color: 0x22c55e,
+            backgroundColor: 0xf8fafc
+        });
+
+        // Data Storage (Simulating SQL with localStorage)
+        const STORAGE_KEYS = {
+            PRODUCTS: 'afrisante_products',
+            WHATSAPP: 'afrisante_whatsapp',
+            CART: 'afrisante_cart'
+        };
+
+        // Initialize data
+        let products = JSON.parse(localStorage.getItem(STORAGE_KEYS.PRODUCTS)) || [];
+        let whatsappNumber = localStorage.getItem(STORAGE_KEYS.WHATSAPP) || '+237652741659';
+        let cart = JSON.parse(localStorage.getItem(STORAGE_KEYS.CART)) || [];
+
+        // DOM Elements
+        const cartBtn = document.getElementById('cartBtn');
+        const adminBtn = document.getElementById('adminBtn');
+        const cartModal = document.getElementById('cartModal');
+        const adminModal = document.getElementById('adminModal');
+        const adminPanel = document.getElementById('adminPanel');
+        const closeCart = document.getElementById('closeCart');
+        const closeAdmin = document.getElementById('closeAdmin');
+        const closeAdminPanel = document.getElementById('closeAdminPanel');
+        const productsGrid = document.getElementById('productsGrid');
+        const cartItems = document.getElementById('cartItems');
+        const cartCount = document.getElementById('cartCount');
+        const cartTotal = document.getElementById('cartTotal');
+        const validateOrder = document.getElementById('validateOrder');
+        const adminCode = document.getElementById('adminCode');
+        const loginAdmin = document.getElementById('loginAdmin');
+        const whatsappInput = document.getElementById('whatsappNumber');
+        const saveWhatsApp = document.getElementById('saveWhatsApp');
+        const productName = document.getElementById('productName');
+        const productPrice = document.getElementById('productPrice');
+        const productDescription = document.getElementById('productDescription');
+        const productImage = document.getElementById('productImage');
+        const uploadImage = document.getElementById('uploadImage');
+        const fileName = document.getElementById('fileName');
+        const addProduct = document.getElementById('addProduct');
+        const adminProducts = document.getElementById('adminProducts');
+
+        // Event Listeners
+        cartBtn.addEventListener('click', () => cartModal.classList.remove('hidden'));
+        adminBtn.addEventListener('click', () => adminModal.classList.remove('hidden'));
+        closeCart.addEventListener('click', () => cartModal.classList.add('hidden'));
+        closeAdmin.addEventListener('click', () => adminModal.classList.add('hidden'));
+        closeAdminPanel.addEventListener('click', () => adminPanel.classList.add('hidden'));
+        
+        loginAdmin.addEventListener('click', () => {
+            if (adminCode.value === '001122') {
+                adminModal.classList.add('hidden');
+                adminPanel.classList.remove('hidden');
+                loadAdminProducts();
+            } else {
+                alert('Code incorrect');
+            }
+        });
+
+        saveWhatsApp.addEventListener('click', () => {
+            whatsappNumber = whatsappInput.value;
+            localStorage.setItem(STORAGE_KEYS.WHATSAPP, whatsappNumber);
+            alert('Numéro WhatsApp sauvegardé!');
+        });
+
+        uploadImage.addEventListener('click', () => productImage.click());
+        productImage.addEventListener('change', (e) => {
+            fileName.textContent = e.target.files[0]?.name || 'Aucun fichier sélectionné';
+        });
+
+        addProduct.addEventListener('click', () => {
+            if (!productName.value || !productPrice.value || !productDescription.value || !productImage.files[0]) {
+                alert('Veuillez remplir tous les champs et sélectionner une image');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const newProduct = {
+                    id: Date.now(),
+                    name: productName.value,
+                    price: parseInt(productPrice.value),
+                    description: productDescription.value,
+                    image: e.target.result
+                };
+
+                products.push(newProduct);
+                localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(products));
+                
+                // Reset form
+                productName.value = '';
+                productPrice.value = '';
+                productDescription.value = '';
+                productImage.value = '';
+                fileName.textContent = 'Aucun fichier sélectionné';
+                
+                loadProducts();
+                loadAdminProducts();
+                alert('Produit ajouté avec succès!');
+            };
+            reader.readAsDataURL(productImage.files[0]);
+        });
+
+        validateOrder.addEventListener('click', () => {
+            if (cart.length === 0) {
+                alert('Votre panier est vide');
+                return;
+            }
+
+            const message = `Bonjour! Je souhaite commander les produits suivants:\n\n${cart.map(item => 
+                `- ${item.name} (${item.quantity}x): ${item.price * item.quantity} FCFA`
+            ).join('\n')}\n\nTotal: ${calculateTotal()} FCFA`;
+
+            const encodedMessage = encodeURIComponent(message);
+            window.open(`https://wa.me/${whatsappNumber.replace('+', '')}?text=${encodedMessage}`, '_blank');
+        });
+
+        // Functions
+        function loadProducts() {
+            productsGrid.innerHTML = '';
+            products.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-200';
+                productCard.innerHTML = `
+                    <img src="${product.image}" alt="${product.name}" class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <h3 class="font-semibold text-lg mb-2">${product.name}</h3>
+                        <p class="text-gray-600 text-sm mb-3">${product.description}</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-green-600 font-bold">${product.price} FCFA</span>
+                            <button onclick="addToCart(${product.id})" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition duration-200">
+                                Ajouter au panier
+                            </button>
+                        </div>
+                    </div>
+                `;
+                productsGrid.appendChild(productCard);
+            });
+        }
+
+        function loadAdminProducts() {
+            adminProducts.innerHTML = '';
+            products.forEach(product => {
+                const productItem = document.createElement('div');
+                productItem.className = 'flex justify-between items-center p-3 border rounded-lg';
+                productItem.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <img src="${product.image}" alt="${product.name}" class="w-12 h-12 object-cover rounded">
+                        <div>
+                            <h5 class="font-semibold">${product.name}</h5>
+                            <p class="text-sm text-gray-600">${product.price} FCFA</p>
+                        </div>
+                    </div>
+                    <button onclick="deleteProduct(${product.id})" class="text-red-600 hover:text-red-800">
+                        <i data-feather="trash-2"></i>
+                    </button>
+                `;
+                adminProducts.appendChild(productItem);
+            });
+            feather.replace();
+        }
+
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            const existingItem = cart.find(item => item.id === productId);
+
+            if (existingItem) {
+                existingItem.quantity++;
+            } else {
+                cart.push({...product, quantity: 1});
+            }
+
+            updateCart();
+        }
+
+        function updateCart() {
+            localStorage.setItem(STORAGE_KEYS.CART, JSON.stringify(cart));
+            cartCount.textContent = cart.reduce((total, item) => total + item.quantity, 0);
+            
+            cartItems.innerHTML = '';
+            cart.forEach(item => {
+                const cartItem = document.createElement('div');
+                cartItem.className = 'flex justify-between items-center mb-4 pb-4 border-b';
+                cartItem.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded">
+                        <div>
+                            <h5 class="font-semibold">${item.name}</h5>
+                            <p class="text-sm text-gray-600">${item.price} FCFA</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button onclick="updateQuantity(${item.id}, -1)" class="bg-gray-200 w-8 h-8 rounded-full">-</button>
+                        <span>${item.quantity}</span>
+                        <button onclick="updateQuantity(${item.id}, 1)" class="bg-gray-200 w-8 h-8 rounded-full">+</button>
+                    </div>
+                `;
+                cartItems.appendChild(cartItem);
+            });
+
+            cartTotal.textContent = `${calculateTotal()} FCFA`;
+        }
+
+        function updateQuantity(productId, change) {
+            const item = cart.find(item => item.id === productId);
+            if (item) {
+                item.quantity += change;
+                if (item.quantity <= 0) {
+                    cart = cart.filter(item => item.id !== productId);
+                }
+                updateCart();
+            }
+        }
+
+        function calculateTotal() {
+            return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+        }
+
+        function deleteProduct(productId) {
+            if (confirm('Êtes-vous sûr de vouloir supprimer ce produit?')) {
+                products = products.filter(p => p.id !== productId);
+                cart = cart.filter(item => item.id !== productId);
+                localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(products));
+                localStorage.setItem(STORAGE_KEYS.CART, JSON.stringify(cart));
+                loadProducts();
+                loadAdminProducts();
+                updateCart();
+            }
+        }
+
+        // Initialize
+        loadProducts();
+        updateCart();
+        whatsappInput.value = whatsappNumber;
+
+        // Make functions global
+        window.addToCart = addToCart;
+        window.updateQuantity = updateQuantity;
+        window.deleteProduct = deleteProduct;
+    </script>
+</body>
+</html>
